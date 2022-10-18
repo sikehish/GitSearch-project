@@ -1,23 +1,40 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import Form from './Form';
+import Intro from './Intro';
+import Repos from './Repos';
+import { AiFillGithub } from "react-icons/ai";
 
 function App() {
+
+  const [info, setInfo] = useState(null);
+  const [repos, setRepos] = useState(null);
+
+  useEffect(()=>{
+    
+    const fetchRepos = async ()=>{
+      try{
+        const res= await fetch(info.repos_url);
+      const data= await res.json()
+      setRepos(data);
+      }catch(err){
+        // console.log(err);
+      }
+      
+    }
+
+    if(info && !(info.message)) fetchRepos();
+  },[info])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div className="typewriter">
+      <header>
+      <AiFillGithub className='icon'/> <span className='icon'>GitSearch</span>
+      <h1 className=''>Your go to Github repos listing page!</h1>
+      <Form setInfo={setInfo} />
       </header>
+      {info && <Intro info={info}/>}
+      {repos && <Repos repos={repos}/>}
     </div>
   );
 }
